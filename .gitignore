@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Local Claude settings
+.claude/
+
+# Source documents (not for distribution)
+*.hwp
+*.hwpx
+*.docx
+*.pdf
+
+# Personal proofreading outputs
+*교정교열표.md
+*교정교열표*.md
+
+# Editor
+.vscode/
+.idea/
