@@ -1,6 +1,6 @@
 # paper-proofread
 
-한국어 학술 논문 교정교열을 위한 [Claude Code](https://claude.com/claude-code) 스킬입니다.
+한국어 학술논문 및 보고서 교정교열을 위한 [Claude Code](https://claude.com/claude-code) 스킬입니다.
 
 논문 원고(`.docx` / `.pdf` / `.md` / `.hwp`)를 입력하면 청크 단위로 정밀 점검하여 **수정 원고**와 **교정교열표**를 출력합니다.
 
