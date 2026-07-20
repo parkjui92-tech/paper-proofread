@@ -6,79 +6,89 @@
 
 **한국어** · [English](README.en.md)
 
-한국어 학술 원고(`.docx` · `.pdf` · `.md` · `.hwp`)를 약 2,000자 청크로 잘라 끝까지 훑고 **수정 원고**와 **교정교열표**를 내놓는 [Claude Code](https://claude.com/claude-code) 스킬입니다.
-맞춤법 검사기가 보는 표기 층위 아래로 한 겹 더 들어갑니다 — 이중피동·번역투·주술 불일치 같은 **문장 층위**, 그리고 본문 인용과 참고문헌 목록이 맞물리는 **인용 층위**까지.
+한국어 논문·보고서 원고(`.docx` · `.pdf` · `.md` · `.hwp`)를 대신 교정해 주는 [Claude Code](https://claude.com/claude-code) 스킬입니다.
 
-<!-- 데모 GIF 자리 -->
+원고를 주시면 **2,000자쯤씩 나눠 차례로 봅니다.** 한 번에 훑으면 뒤로 갈수록 대충 보게 되기 때문입니다. 서론에서는 문장마다 붙들고 늘어지다가 결론쯤 가면 눈이 미끄러지고, 20쪽 앞에서 어떤 표기를 골랐는지도 기억나지 않습니다. 나눠서 보면 원고가 길어져도 뒤쪽까지 처음과 같은 밀도로 봅니다.
 
-## 무엇을 점검하나
+## 무엇을 봐 주나요
 
-네 축입니다 — **표기**(맞춤법·띄어쓰기·외래어 표기·숫자 단위), **문장**(주술 호응·이중피동·번역투·중복 표현), **논리·구조**(문단 구조·용어 일관성·표 번호와 본문 참조), **인용·참고문헌**(본문 인용 ↔ 목록 대조·서지정보 완결성). 영어권 교정 도구에는 이중피동·번역투가 범주 자체로 없고, 국내 맞춤법 검사기는 표기 층위 위를 보지 않습니다.
-선택 축이 하나 더 있습니다. **서지 실재 검증**은 DOI·URL을 실제로 열어 조회된 메타데이터를 목록과 대조합니다. AI가 초안이나 문헌 정리에 관여한 원고의 투고 전 점검에서 가장 값진 축입니다 — 그럴듯하지만 존재하지 않는 문헌은 서지 형식이 오히려 깔끔해서 눈으로는 걸러지지 않습니다.
+네 가지를 봅니다.
 
-| # | 위치 | 심각도 | 유형 | 원문 | 수정안 | 사유 |
-|---|------|--------|------|------|--------|------|
-| 1 | §2.1/C3 | 🔴 | 이중피동 | 분석되어지고 | 분석되고 | 이중피동 제거 |
-| 2 | §3.2/C5 | 🟡 | 번역투 | ~에 있어서 | ~에서 | 불필요한 번역투 |
-| 3 | 참고문헌 | 🔴 | 환각 출처 의심 | (목록 12번 문헌) | — | DOI 조회 실패 · 해당 권호에 논문 없음 |
+- **맞춤법과 띄어쓰기** — 틀린 글자, 붙여 쓸 자리와 띄어 쓸 자리, 외래어 표기, 숫자와 단위
+- **어색한 문장** — "분석되어지고"처럼 피동을 두 번 쓴 표현, "~에 있어서"처럼 영어를 직역한 듯한 표현, 주어와 서술어가 어긋난 문장, 같은 말의 반복
+- **논리와 용어** — 문단이 말이 되게 이어지는지, 같은 용어를 원고 내내 같은 방식으로 썼는지("기술이전"과 "기술 이전"이 섞이지 않았는지), 표 번호가 본문에서 부르는 것과 맞는지
+- **인용과 참고문헌** — 본문에서 인용한 문헌이 목록에 있는지, 목록에만 있고 본문에서 한 번도 부르지 않은 문헌은 없는지
 
-형식 예시입니다. 지적마다 심각도 🔴 error(반드시 수정) / 🟡 suggest(권고) / 🔵 style(선택)이 붙고, 위치 칼럼의 `§2.1/C3`은 섹션명과 청크 번호라 원문에서 바로 찾아갈 수 있습니다. 이 **교정교열표**와 함께 **수정 원고**, 그리고 반복 오류 패턴·용어 불일치를 정리한 **요약 리포트**가 나옵니다.
-→ [왜 만들었나·상세 사용법](docs/why.md)
+흔히 쓰는 맞춤법 검사기는 첫 번째 항목까지만 봅니다. 영어권 교정 도구에는 두 번째 항목의 개념 자체가 없습니다 — 영어에는 없는 문제이기 때문입니다.
+
+여기에 **켜 두시면 좋은 기능이 하나 더** 있습니다. 인용한 논문이 실제로 있는지 확인하는 기능입니다. DOI와 링크를 진짜로 열어보고, 조회된 정보가 참고문헌 목록과 맞는지 대조합니다.
+
+**AI가 초안이나 문헌 정리를 도운 원고라면 꼭 켜시길 권합니다.** AI는 그럴듯한 가짜 논문을 지어내기도 하는데, 저자명도 학술지명도 자연스럽고 서지 형식은 사람이 손으로 적은 것보다 오히려 깔끔합니다. 그래서 눈으로는 걸러지지 않습니다.
 
 ## 설치
 
 ```bash
-# A. git clone (권장 — 이후 git pull로 갱신)
+# A. git clone (권장 — 나중에 git pull로 새 버전을 받을 수 있습니다)
 mkdir -p ~/.claude/skills && cd ~/.claude/skills && git clone https://github.com/parkjui92/paper-proofread.git
-# B. .skill 번들 (git 없이 파일만)
+# B. 파일만 내려받기 (git 없이)
 mkdir -p ~/.claude/skills/paper-proofread && cd ~/.claude/skills/paper-proofread
 curl -L -o paper-proofread.skill https://github.com/parkjui92/paper-proofread/raw/main/paper-proofread.skill
 unzip paper-proofread.skill && rm paper-proofread.skill
-# 설치 후 Claude Code 재시작 → ~/.claude/skills/paper-proofread/SKILL.md 가 있으면 완료
 ```
 
-## 쓰는 법
+설치한 뒤 Claude Code를 다시 켜 주세요. `~/.claude/skills/paper-proofread/SKILL.md` 파일이 보이면 잘 된 것입니다.
+
+## 이렇게 쓰시면 됩니다
+
+명령어를 외우실 필요는 없습니다. 평소 말하듯 요청하시면 됩니다.
 
 ```
-이 논문 투고 전에 교정교열해줘. 첨부한 .docx야   ← 네 축 전체 (논문 아닌 문서도 됩니다)
-참고문헌 실재 여부까지 검증해줘                  ← 서지 실재 검증 on
-맞춤법이랑 띄어쓰기만 빠르게 봐줘                ← 축 선택 · "보수적으로"면 🔴만
+이 논문 투고 전에 교정교열해줘. 첨부한 .docx야   ← 네 가지 전부 (논문이 아닌 문서도 됩니다)
+참고문헌이 실제로 있는 문헌인지도 확인해줘        ← 실재 확인 기능 켜기
+맞춤법이랑 띄어쓰기만 빠르게 봐줘                ← 한 가지만 골라서
+공저자 원고라 보수적으로 봐줘                    ← 꼭 고쳐야 하는 것만 알려 줌
 ```
 
-| 파라미터 | 기본값 | 설명 |
+아래 설정을 직접 지정하실 수도 있지만, 위처럼 말로 하셔도 알아서 맞춰집니다.
+
+| 설정 | 기본값 | 무슨 뜻인가요 |
 |---|---|---|
-| `strictness` | moderate | `conservative`(🔴만) / `moderate`(🔴🟡) / `aggressive`(🔴🟡🔵) |
-| `focus` | full | `full` / `surface`(표기) / `sentence`(문장) / `reference`(인용·참고문헌) |
-| `verify_references` | off | on이면 DOI·URL 실재 검증 (네트워크 필요) |
-| `chunk_size` · `citation_style` | 2000자 · APA 7th | 청크 크기(문단 경계에서 끊음) · 인용 형식 |
+| `strictness` | moderate | 얼마나 깐깐하게 볼지 — `conservative`(🔴만) / `moderate`(🔴🟡) / `aggressive`(🔴🟡🔵) |
+| `focus` | full | 무엇을 볼지 — `full`(전체) / `surface`(맞춤법) / `sentence`(문장) / `reference`(인용·참고문헌) |
+| `verify_references` | off | 켜면 인용한 논문이 실제로 있는지 확인합니다 (인터넷 연결 필요) |
+| `chunk_size` · `citation_style` | 2000자 · APA 7th | 몇 자씩 끊어 볼지(문단이 잘리지 않게 끊습니다) · 인용 형식 |
 
-## 요구 환경·한계
+## 결과는 이렇게 나옵니다
 
-- Claude Code(로컬)·claude.ai 모두 지원. `.docx`·`.pdf`·`.hwp` 추출은 의존성이 없으면 자동 폴백하고 어떤 경로를 썼는지 알립니다. 원고 본문은 외부로 전송되지 않습니다 — 네트워크를 쓰는 것은 켜 둔 경우의 서지 실재 검증뿐이고, 그때도 조회하는 것은 서지정보뿐입니다
-- **놓치는 것도, 잘못 짚는 것도 있습니다.** 교정교열표는 최종 결정이 아니라 검토 목록입니다. 서지 실재 검증의 "미확인"(DOI 없는 국내 학술지·페이월)도 오류가 아니라 사람이 직접 봐야 할 목록입니다
-- **내용은 건드리지 않습니다.** 논증·방법론 층위의 검수는 [socsci-paper-kit](https://github.com/parkjui92/socsci-paper-kit)의 검수 게이트 몫입니다
-- [SKILL.md](SKILL.md) · [references/rules_ko.md](references/rules_ko.md)(번역투 패턴 14종 등 교정 규칙) · [CHANGELOG.md](CHANGELOG.md)
+고칠 곳은 이런 표로 정리해 드립니다.
 
-## 시리즈
+| # | 위치 | 심각도 | 유형 | 원문 | 수정안 | 사유 |
+|---|------|--------|------|------|--------|------|
+| 1 | §2.1/C3 | 🔴 | 이중피동 | 분석되어지고 | 분석되고 | 피동을 두 번 썼습니다 |
+| 2 | §3.2/C5 | 🟡 | 번역투 | ~에 있어서 | ~에서 | 영어를 직역한 듯한 표현입니다 |
+| 3 | 참고문헌 | 🔴 | 실재 의심 | (목록 12번) | — | DOI가 열리지 않고, 해당 권호에 그 논문이 없습니다 |
 
-"검증이 내장된 연구 워크플로" 시리즈의 하나입니다. 셋은 팀으로 문서를 끝까지 쓰는 킷이고, 하나는 강의자료를 만들고 화면에서 고치는 킷이며, 넷은 워크플로의 한 지점을 담당하는 단독 스킬입니다.
+심각도는 세 단계입니다. 🔴는 **꼭 고쳐야 하는 것**, 🟡는 **고치면 좋은 것**, 🔵는 **취향 문제**입니다. 위치 칸의 `§2.1/C3`은 "2.1절, 세 번째 조각"이라는 뜻이라 원고에서 바로 찾아가실 수 있습니다.
 
-**에이전트 팀 킷** — 설계 → 검토 게이트 → 조사 → 집필 → 검수 → 변환을 팀으로 완주하는 플러그인
+표만 나오는 게 아닙니다. 지적을 반영한 **수정 원고**와, 어떤 실수가 반복됐고 어떤 용어가 원고 안에서 엇갈렸는지 정리한 **요약 리포트**가 함께 나옵니다. 요약 리포트의 "반복된 패턴"은 눈여겨보시면 좋습니다 — 이번 원고를 고치는 데서 끝나지 않고 다음 원고를 바꿔 주는 부분입니다.
 
-- [policy-research-kit](https://github.com/parkjui92/policy-research-kit) — 정책연구보고서
-- [rnd-proposal-kit](https://github.com/parkjui92/rnd-proposal-kit) — 정부 R&D 제안서
-- [socsci-paper-kit](https://github.com/parkjui92/socsci-paper-kit) — 사회과학 논문. **이 스킬을 동반 스킬로 씁니다** — 팀의 마무리 담당이 승인된 초안을 교정교열할 때 paper-proofread를 호출합니다
+→ [왜 만들었는지, 더 자세한 사용법](docs/why.md)
 
-**제작·편집 킷** — 강의자료를 만들고 브라우저에 띄운 채로 고치는 플러그인
+## 알아두실 점
 
-- [lecture-deck-kit](https://github.com/parkjui92/lecture-deck-kit) — 강의자료 HTML 덱 + 라이브 편집
+- Claude Code(내 컴퓨터)와 claude.ai 둘 다 됩니다. `.docx`·`.pdf`·`.hwp`를 읽는 데 필요한 프로그램이 없으면 다른 방법으로 알아서 돌아가고, 어떤 방법을 썼는지 알려 드립니다.
+- **원고 내용은 밖으로 나가지 않습니다.** 인터넷을 쓰는 것은 실재 확인 기능을 켰을 때뿐이고, 그때도 조회하는 것은 제목·저자·DOI 같은 서지정보뿐입니다.
+- **놓치는 것도 있고, 멀쩡한 곳을 잘못 짚기도 합니다.** 교정교열표는 확정된 결정이 아니라 한 번 봐 달라는 목록입니다. 실재 확인에서 "미확인"으로 나온 문헌(DOI가 없는 국내 학술지, 돈을 내야 볼 수 있는 논문)도 틀렸다는 뜻이 아니라 사람이 직접 봐야 한다는 뜻입니다.
+- **내용은 건드리지 않습니다.** 표현과 형식만 다듬습니다. 논증이 맞는지, 방법론이 타당한지 보는 일은 [socsci-paper-kit](https://github.com/parkjui92/socsci-paper-kit)의 검수 단계 몫입니다. 그 킷은 마무리 담당이 원고를 다듬을 때 **이 스킬을 불러 씁니다.**
+- 더 보실 것 — [SKILL.md](SKILL.md)(스킬이 실제로 따르는 지시문) · [references/rules_ko.md](references/rules_ko.md)(번역투 14가지 등 교정 규칙) · [CHANGELOG.md](CHANGELOG.md)(버전별 변경 내역)
 
-**단독 스킬**
+## 함께 만든 것들
 
-- [paper-proofread](https://github.com/parkjui92/paper-proofread) — 한국어 학술 교정교열 **(이 저장소)**
-- [fact-verify](https://github.com/parkjui92/fact-verify) — 출처 검증 (4-Tier 분류, 재인용 체인 감지, URL·DOI 실존 확인)
-- [form-tailor](https://github.com/parkjui92/form-tailor) — 기관 양식 맞춤
-- [report-to-brief](https://github.com/parkjui92/report-to-brief) — 보고서 압축
+**보고서·제안서를 써 주는 플러그인** — [policy-research-kit](https://github.com/parkjui92/policy-research-kit) (정책연구보고서) · [rnd-proposal-kit](https://github.com/parkjui92/rnd-proposal-kit) (정부 R&D 제안서) · [socsci-paper-kit](https://github.com/parkjui92/socsci-paper-kit) (사회과학 논문)
+
+**만들고 고치는 플러그인** — [lecture-deck-kit](https://github.com/parkjui92/lecture-deck-kit) (강의자료 HTML 덱 · 브라우저에서 바로 수정)
+
+**하나씩 쓰는 도구** — [fact-verify](https://github.com/parkjui92/fact-verify) (출처가 진짜인지 확인) · **paper-proofread** (이 저장소) · [form-tailor](https://github.com/parkjui92/form-tailor) (기관 양식에 맞춰 문서 작성) · [report-to-brief](https://github.com/parkjui92/report-to-brief) (긴 보고서를 짧게)
 
 ## 라이선스
 

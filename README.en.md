@@ -6,79 +6,89 @@
 
 [한국어](README.md) · **English**
 
-A [Claude Code](https://claude.com/claude-code) skill that walks a Korean academic manuscript (`.docx` · `.pdf` · `.md` · `.hwp`) end to end in ~2,000-character chunks and returns a **corrected manuscript** plus an itemized **correction table**.
-It works one layer below what a spell checker sees — the **sentence layer** (double passives, translationese, subject–predicate drift) and the **citation layer**, where in-text citations have to line up with the reference list.
+A [Claude Code](https://claude.com/claude-code) skill that proofreads Korean academic manuscripts (`.docx` · `.pdf` · `.md` · `.hwp`) for you.
 
-<!-- demo GIF goes here -->
+Hand it a draft and it **reads through about 2,000 characters at a time, in order.** Skimming a long manuscript in one pass makes the checking thin out toward the end — you hold on to every sentence in the introduction, your eyes slide by the conclusion, and you no longer remember which spelling you picked twenty pages back. Taken piece by piece, the last page gets the same attention as the first.
 
-## What it checks
+## What it looks at
 
-Four axes — **orthography** (spelling, spacing, loanword transliteration, number/unit consistency), **sentence editing** (subject–predicate agreement, double passives, translationese, redundancy), **logic & structure** (paragraph structure, terminology consistency, table numbering and whether the body references them), **citations & references** (in-text citations vs. the list, bibliographic completeness). English-language proofreading tools don't model double passives or translationese at all — those categories don't exist in the language they were built for — and Korean spell checkers stop at the orthography layer.
-One more axis you can switch on. **Reference-existence verification** resolves DOIs and URLs for real and compares the retrieved metadata against the list. It's the most valuable axis in a final pre-submission pass on an AI-assisted manuscript — a plausible but nonexistent work often has *cleaner* bibliographic formatting than what a human types by hand, which is exactly why the eye doesn't catch it.
+Four things.
 
-| # | Location | Sev. | Type | Original | Suggested | Reason |
-|---|------|--------|------|------|--------|------|
-| 1 | §2.1/C3 | 🔴 | Double passive | 분석되어지고 | 분석되고 | Doubled passive removed |
-| 2 | §3.2/C5 | 🟡 | Translationese | ~에 있어서 | ~에서 | Unnecessary calque |
-| 3 | References | 🔴 | Suspected hallucination | (list item 12) | — | DOI does not resolve · not in that volume/issue |
+- **Spelling and spacing** — misspellings, where words join and where they break, loanword transliteration, numbers and units. Where two spellings are both correct (시도해 보다 / 시도해보다), the question isn't which one is right but whether your manuscript picks one and stays with it
+- **Awkward sentences** — the part that needs a Korean-specific tool. English proofreading software has no category for any of these, because they aren't problems in English, and Korean spell checkers stop one layer below them:
+  - *Double passives* — 분석되어지고. 되다 already makes the verb passive, then -어지다 makes it passive a second time. It breaks the rule, but it's so ordinary in academic Korean that it reads as normal
+  - *Translationese* — 연구에 있어서 ("in regard to the study"), ~로 사료된다 ("it is deemed that"). Nothing is grammatically wrong, so a spell checker waves it through. The sentence just runs longer and the claim gets fuzzier
+  - *Subject–predicate drift* — Korean puts the verb at the end and lets you stack modifying clauses in front of it. Stack enough and the subject stops agreeing with its verb — and the author, who knows what the sentence was meant to say, is the last person to see it
+- **Logic and terminology** — whether paragraphs hold together, whether one term stays one term across a long draft (기술이전 in chapter 2, 기술 이전 in chapter 5), whether table numbers match what the body refers to
+- **Citations and references** — every in-text citation accounted for in the list, and nothing sitting in the list that the body never cites
 
-Illustrative. Every finding carries a severity — 🔴 error (must fix) / 🟡 suggest (recommended) / 🔵 style (optional) — and the location column (`§2.1/C3`) gives the section name and chunk number, so you can go straight to the spot in your original. Alongside this **correction table** you get the **corrected manuscript** and a **summary report** of recurring error patterns and terms found to be inconsistent.
-→ [Why I built this · detailed usage](docs/why.md)
+There's **one more you can switch on**: checking that the works you cite actually exist. It opens each DOI and link for real and compares what comes back against your reference list. **If AI helped with the draft or the literature, please turn this on** — AI invents plausible papers that were never written, and the author name reads naturally, so does the journal, and the bibliographic formatting is often *tidier* than what a person types by hand. That's exactly why your eye slides past it.
 
 ## Install
 
 ```bash
-# A. git clone (recommended — update later with git pull)
+# A. git clone (recommended — you can pull new versions later)
 mkdir -p ~/.claude/skills && cd ~/.claude/skills && git clone https://github.com/parkjui92/paper-proofread.git
-# B. the .skill bundle (files only, no git)
+# B. just the files (no git)
 mkdir -p ~/.claude/skills/paper-proofread && cd ~/.claude/skills/paper-proofread
 curl -L -o paper-proofread.skill https://github.com/parkjui92/paper-proofread/raw/main/paper-proofread.skill
 unzip paper-proofread.skill && rm paper-proofread.skill
-# then restart Claude Code → if ~/.claude/skills/paper-proofread/SKILL.md exists, you're set
 ```
 
-## How to use it
+Then restart Claude Code. If you can see `~/.claude/skills/paper-proofread/SKILL.md`, you're set.
+
+## Using it
+
+You don't need to memorize any commands. Just ask in plain language.
 
 ```
-Proofread this paper before I submit it. The .docx is attached.  ← all four axes (non-papers too)
-Also verify that the references actually exist                   ← reference verification on
-Just spelling and spacing, quickly                               ← pick an axis · "conservatively" = 🔴 only
-(triggers are Korean apart from "proofreading" — include that word, or invoke the skill by name)
+Proofread this paper before I submit it. The .docx is attached.  ← all four (non-papers work too)
+Also check that the references are real works                    ← existence checking on
+Just spelling and spacing, quickly                               ← pick one of the four
+This is a co-author's draft, so be conservative                  ← only the must-fix items
+(the trigger words are Korean apart from "proofreading" — include that word, or call the skill by name)
 ```
 
-| Parameter | Default | Description |
+You can set the options below by hand, but asking in words like the above sets them for you.
+
+| Option | Default | What it means |
 |---|---|---|
-| `strictness` | moderate | `conservative` (🔴 only) / `moderate` (🔴🟡) / `aggressive` (🔴🟡🔵) |
-| `focus` | full | `full` / `surface` (orthography) / `sentence` / `reference` |
-| `verify_references` | off | On resolves DOIs and URLs for real (network required) |
-| `chunk_size` · `citation_style` | 2000 chars · APA 7th | Chunk size (cut at paragraph boundaries) · citation format |
+| `strictness` | moderate | How picky to be — `conservative` (🔴 only) / `moderate` (🔴🟡) / `aggressive` (🔴🟡🔵) |
+| `focus` | full | What to look at — `full` / `surface` (spelling) / `sentence` / `reference` (citations) |
+| `verify_references` | off | On means it checks whether the cited works really exist (needs internet) |
+| `chunk_size` · `citation_style` | 2000 chars · APA 7th | How much to read at a time (cut so paragraphs stay whole) · citation format |
 
-## Requirements & limits
+## What you get back
 
-- Claude Code (local) and claude.ai both supported. `.docx` · `.pdf` · `.hwp` extraction falls back automatically when a dependency is missing, and the results say which path was used. Manuscript text is never sent anywhere — the only step that touches the network is reference verification, if you turn it on, and even then only bibliographic data is queried. You can direct it in English; the manuscripts it checks, and the rule reference it works from, are Korean
-- **It misses things, and it flags things wrongly.** The correction table is a review list, not a set of decisions. "Unverified" results from reference checking (Korean journals without DOIs, paywalled texts) are not errors either — they're the list a human needs to look at
-- **It does not touch content.** Review at the argument and methodology layer belongs to the gates in [socsci-paper-kit](https://github.com/parkjui92/socsci-paper-kit). Further reading: [SKILL.md](SKILL.md) · [references/rules_ko.md](references/rules_ko.md) (14 translationese patterns and the rest of the Korean rule reference) · [CHANGELOG.md](CHANGELOG.md)
+Everything worth changing comes back as a table like this.
 
-## Series
+| # | Location | Sev. | Type | Original | Suggested | Reason |
+|---|------|--------|------|------|--------|------|
+| 1 | §2.1/C3 | 🔴 | Double passive | 분석되어지고 | 분석되고 | Passive marked twice |
+| 2 | §3.2/C5 | 🟡 | Translationese | ~에 있어서 | ~에서 | Reads like a direct translation from English |
+| 3 | References | 🔴 | Possibly not real | (list item 12) | — | DOI doesn't open, and that volume has no such paper |
 
-One piece of a "verification built into the research workflow" series. Three are kits that carry a document to completion with an agent team; one builds lecture decks and edits them live; four are standalone skills covering a single point in the workflow.
+There are three severity levels. 🔴 means **you have to fix it**, 🟡 means **better if you do**, 🔵 is **a matter of taste**. The location column reads `§2.1/C3` — section 2.1, third piece — so you can go straight to the spot in your own file.
 
-**Agent-team kits** — plugins that run design → review gate → research → drafting → review → conversion as a team
+You don't only get the table. A **corrected manuscript** with the changes applied comes with it, plus a **summary report** of which mistakes kept recurring and which terms drifted apart across the draft. That "recurring patterns" part is worth a look — it doesn't just fix this manuscript, it changes the next one.
 
-- [policy-research-kit](https://github.com/parkjui92/policy-research-kit) — policy research reports
-- [rnd-proposal-kit](https://github.com/parkjui92/rnd-proposal-kit) — Korean government R&D proposals
-- [socsci-paper-kit](https://github.com/parkjui92/socsci-paper-kit) — social science papers. **Uses this skill as a companion** — the team's finalizer calls paper-proofread to copyedit the approved draft
+→ [Why I built this, and fuller usage notes](docs/why.md)
 
-**Authoring kit** — a plugin that builds lecture decks and edits them live in the browser
+## Good to know
 
-- [lecture-deck-kit](https://github.com/parkjui92/lecture-deck-kit) — HTML lecture decks + live editing
+- Works on Claude Code (your own machine) and on claude.ai. If a program needed to read `.docx` · `.pdf` · `.hwp` isn't there, it falls back to another way on its own and tells you which one it used.
+- **Your manuscript doesn't leave your machine.** The only step that touches the internet is the existence check, if you turn it on, and even then all it looks up is bibliographic data — title, author, DOI.
+- **It misses things, and it flags things that were fine.** The correction table isn't a set of decisions, it's a list asking you to take a look. Results marked "unverified" by the existence check (Korean journals without DOIs, papers behind a paywall) don't mean something is wrong either — they mean a person needs to check.
+- **It doesn't touch your content.** It works on wording and format only. Whether the argument holds and the methodology is sound belongs to the review stages in [socsci-paper-kit](https://github.com/parkjui92/socsci-paper-kit) — and that kit **calls this skill** when its finalizer polishes a draft.
+- Further reading — [SKILL.md](SKILL.md) (the instructions the skill actually follows) · [references/rules_ko.md](references/rules_ko.md) (14 translationese patterns and the rest of the Korean rules) · [CHANGELOG.md](CHANGELOG.md) (what changed in each version)
 
-**Standalone skills**
+## Related work
 
-- [paper-proofread](https://github.com/parkjui92/paper-proofread) — Korean academic proofreading **(this repository)**
-- [fact-verify](https://github.com/parkjui92/fact-verify) — source verification (4-tier classification, re-citation chain detection, URL/DOI existence checks)
-- [form-tailor](https://github.com/parkjui92/form-tailor) — institutional document formats
-- [report-to-brief](https://github.com/parkjui92/report-to-brief) — report compression
+**Plugins that write reports and proposals** — [policy-research-kit](https://github.com/parkjui92/policy-research-kit) (policy research reports) · [rnd-proposal-kit](https://github.com/parkjui92/rnd-proposal-kit) (Korean government R&D proposals) · [socsci-paper-kit](https://github.com/parkjui92/socsci-paper-kit) (social science papers)
+
+**Plugins that build and edit** — [lecture-deck-kit](https://github.com/parkjui92/lecture-deck-kit) (HTML lecture slides you edit right in the browser)
+
+**Single-purpose tools** — [fact-verify](https://github.com/parkjui92/fact-verify) (check whether sources are real) · **paper-proofread** (this repository) · [form-tailor](https://github.com/parkjui92/form-tailor) (match an organization's document format) · [report-to-brief](https://github.com/parkjui92/report-to-brief) (shorten long reports)
 
 ## License
 
