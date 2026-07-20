@@ -269,13 +269,17 @@ unzip paper-proofread.skill && rm paper-proofread.skill
 
 ## 시리즈
 
-"검증이 내장된 연구 워크플로" 시리즈의 하나입니다. 셋은 팀으로 문서를 끝까지 쓰는 킷이고, 넷은 워크플로의 한 지점을 담당하는 단독 스킬입니다.
+"검증이 내장된 연구 워크플로" 시리즈의 하나입니다. 셋은 팀으로 문서를 끝까지 쓰는 킷이고, 하나는 강의자료를 만들고 화면에서 고치는 킷이며, 넷은 워크플로의 한 지점을 담당하는 단독 스킬입니다.
 
 **에이전트 팀 킷** — 설계 → 검토 게이트 → 조사 → 집필 → 검수 → 변환을 팀으로 완주하는 플러그인
 
 - [policy-research-kit](https://github.com/parkjui92/policy-research-kit) — 정책연구보고서
 - [rnd-proposal-kit](https://github.com/parkjui92/rnd-proposal-kit) — 정부 R&D 제안서
 - [socsci-paper-kit](https://github.com/parkjui92/socsci-paper-kit) — 사회과학 논문. **이 스킬을 동반 스킬로 씁니다** — 팀의 마무리 담당이 승인된 초안을 교정교열할 때 paper-proofread를 호출합니다
+
+**제작·편집 킷** — 강의자료를 만들고 브라우저에 띄운 채로 고치는 플러그인
+
+- [lecture-deck-kit](https://github.com/parkjui92/lecture-deck-kit) — 강의자료 HTML 덱 + 라이브 편집
 
 **단독 스킬**
 

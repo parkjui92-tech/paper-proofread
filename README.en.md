@@ -282,13 +282,17 @@ Manuscript text is never sent anywhere. The only step that uses the network is r
 
 ## Series
 
-One piece of a "verification built into the research workflow" series. Three are kits that carry a document to completion with an agent team; four are standalone skills covering a single point in the workflow.
+One piece of a "verification built into the research workflow" series. Three are kits that carry a document to completion with an agent team; one builds lecture decks and edits them live; four are standalone skills covering a single point in the workflow.
 
 **Agent-team kits** — plugins that run design → review gate → research → drafting → review → conversion as a team
 
 - [policy-research-kit](https://github.com/parkjui92/policy-research-kit) — policy research reports
 - [rnd-proposal-kit](https://github.com/parkjui92/rnd-proposal-kit) — Korean government R&D proposals
 - [socsci-paper-kit](https://github.com/parkjui92/socsci-paper-kit) — social science papers. **Uses this skill as a companion** — the team's finalizer calls paper-proofread to copyedit the approved draft
+
+**Authoring kit** — a plugin that builds lecture decks and edits them live in the browser
+
+- [lecture-deck-kit](https://github.com/parkjui92/lecture-deck-kit) — HTML lecture decks + live editing
 
 **Standalone skills**
 
